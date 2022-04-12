@@ -1,0 +1,23 @@
+.settings/
+out/
+target/
+sample/
+logs/
+
+.classpath
+.project
+  
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Maven files
+*.iml
+
+# Other files
+*.jpeg
+*.jpg
+*.png
+/bin/
