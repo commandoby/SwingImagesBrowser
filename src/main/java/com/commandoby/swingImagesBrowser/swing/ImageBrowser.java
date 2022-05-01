@@ -24,6 +24,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileSystemView;
 
+import org.apache.log4j.Logger;
+
 import com.commandoby.swingImagesBrowser.Application;
 import com.commandoby.swingImagesBrowser.components.ImageUnit;
 import com.commandoby.swingImagesBrowser.service.ImageReader;
@@ -34,6 +36,7 @@ public class ImageBrowser implements Runnable, ActionListener {
 	private static final int MIN_HEIGHT = 600;
 
 	private static final ImageReader imageReader = new ImageReaderImpl();
+	private static final Logger log = Logger.getLogger(ImageBrowser.class);
 
 	JFrame frame;
 	JPanel upContents;
@@ -93,45 +96,45 @@ public class ImageBrowser implements Runnable, ActionListener {
 
 	private void startDownContents() {
 		downContents = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		
+
 		if (page > 0) {
 			if (page > 1) {
-	        	addPaginationButton(1);
+				addPaginationButton(1);
 			}
-			
+
 			if (page > 4) {
 				downContents.add(new JLabel("..."));
 			}
-			
+
 			if (page > 3) {
-	        	addPaginationButton(page - 2);
+				addPaginationButton(page - 2);
 			}
-			
+
 			if (page > 2) {
-	        	addPaginationButton(page - 1);
+				addPaginationButton(page - 1);
 			}
-			
+
 			JButton pageButton = new JButton(String.valueOf(page));
-	        pageButton.setEnabled(false);
+			pageButton.setEnabled(false);
 			downContents.add(pageButton);
-	        
-	        if (maxPage - page > 1) {
-	        	addPaginationButton(page + 1);
-	        }
-	        
-	        if (maxPage - page > 2) {
-	        	addPaginationButton(page + 2);
-	        }
-			
+
+			if (maxPage - page > 1) {
+				addPaginationButton(page + 1);
+			}
+
+			if (maxPage - page > 2) {
+				addPaginationButton(page + 2);
+			}
+
 			if (maxPage - page > 3) {
 				downContents.add(new JLabel("..."));
 			}
-	        
-	        if (maxPage != page) {
-	        	addPaginationButton(maxPage);
-	        }
-	        
-	        frame.add(downContents, BorderLayout.SOUTH);
+
+			if (maxPage != page) {
+				addPaginationButton(maxPage);
+			}
+
+			frame.add(downContents, BorderLayout.SOUTH);
 		}
 	}
 
@@ -152,8 +155,7 @@ public class ImageBrowser implements Runnable, ActionListener {
 		centerContents = new JPanel(new BorderLayout());
 
 		Dimension screenSize = frame.getSize();
-		JLabel label = new JLabel(getIcon(fullImagePath, screenSize.width - 10,
-				screenSize.height - 100));
+		JLabel label = new JLabel(getIcon(fullImagePath, screenSize.width - 10, screenSize.height - 100));
 		centerContents.add(label);
 
 		frame.add(centerContents, BorderLayout.CENTER);
@@ -162,7 +164,7 @@ public class ImageBrowser implements Runnable, ActionListener {
 	private void getButtonsFromImageList(JPanel panel) {
 		int pageSize = getPageSize(frame.getSize());
 		List<ImageUnit> preImageUnitList = null;
-		
+
 		if (textField == null || textField.getText().equals("")) {
 			preImageUnitList = Application.images;
 		} else {
@@ -177,37 +179,37 @@ public class ImageBrowser implements Runnable, ActionListener {
 		} else {
 			imageUnitList = getPageImageUnitList(preImageUnitList, pageSize);
 		}
-		
+
 		final List<ImageUnit> finalImageUnitList = imageUnitList;
-		
+
 		Thread thread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 
 				for (int i = 0; i < finalImageUnitList.size(); i++) {
-						JButton button = new JButton(finalImageUnitList.get(i).getImageName(),
-								getIcon(finalImageUnitList.get(i).getAbsolutePath(), 160, 160));
-						button.setPreferredSize(new Dimension(200, 200));
-						button.setVerticalTextPosition(SwingConstants.BOTTOM);
-						button.setHorizontalTextPosition(SwingConstants.CENTER);
+					JButton button = new JButton(finalImageUnitList.get(i).getImageName(),
+							getIcon(finalImageUnitList.get(i).getAbsolutePath(), 160, 160));
+					button.setPreferredSize(new Dimension(200, 200));
+					button.setVerticalTextPosition(SwingConstants.BOTTOM);
+					button.setHorizontalTextPosition(SwingConstants.CENTER);
 
-						button.setActionCommand(finalImageUnitList.get(i).getAbsolutePath());
-						button.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								fullImagePath = e.getActionCommand();
-								frame.remove(upContents);
-								frame.remove(centerContents);
-								frame.remove(downContents);
-								imageUpContents();
-								imageCenterContents();
-								frame.revalidate();
-							}
-						});
+					button.setActionCommand(finalImageUnitList.get(i).getAbsolutePath());
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							fullImagePath = e.getActionCommand();
+							frame.remove(upContents);
+							frame.remove(centerContents);
+							frame.remove(downContents);
+							imageUpContents();
+							imageCenterContents();
+							frame.revalidate();
+						}
+					});
 
-						panel.add(button);
-						frame.revalidate();
+					panel.add(button);
+					frame.revalidate();
 				}
 			}
 
@@ -220,23 +222,25 @@ public class ImageBrowser implements Runnable, ActionListener {
 		int heightSize = (screenSize.height - 90) / 209;
 		return widthSize * heightSize;
 	}
-	
+
 	private List<ImageUnit> getSearchImageUnitList() {
 		List<ImageUnit> imageUnitList = new ArrayList<>();
-		
+
 		for (ImageUnit imageUnit : Application.images) {
 			if (imageUnit.getImageName().matches(".*" + textField.getText() + ".*")) {
 				imageUnitList.add(imageUnit);
 			}
 		}
-		
+
 		return imageUnitList;
 	}
 
 	private List<ImageUnit> getPageImageUnitList(List<ImageUnit> preImageUnitList, int pageSize) {
-		if (page == 0) page = 1;
+		if (page == 0)
+			page = 1;
 		maxPage = preImageUnitList.size() / pageSize + 1;
-		if (page > maxPage) page = maxPage;
+		if (page > maxPage)
+			page = maxPage;
 
 		List<ImageUnit> imageUnitList = new ArrayList<>();
 		for (int i = 0; i < pageSize; i++) {
@@ -253,7 +257,7 @@ public class ImageBrowser implements Runnable, ActionListener {
 		try {
 			image = ImageIO.read(new File(path));
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 		int imageWidth = image.getWidth();
 		int imageHeight = image.getHeight();
@@ -263,11 +267,11 @@ public class ImageBrowser implements Runnable, ActionListener {
 
 		return new ImageIcon(image.getScaledInstance((int) (imageWidth * scale), (int) (imageHeight * scale), 1));
 	}
-	
+
 	private void addPaginationButton(int newPage) {
 		JButton button = new JButton(String.valueOf(newPage));
 		button.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				page = newPage;
@@ -278,7 +282,7 @@ public class ImageBrowser implements Runnable, ActionListener {
 				frame.revalidate();
 			}
 		});
-		
+
 		downContents.add(button);
 	}
 
@@ -350,5 +354,4 @@ public class ImageBrowser implements Runnable, ActionListener {
 
 		frame.revalidate();
 	}
-
 }
