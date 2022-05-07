@@ -81,7 +81,7 @@ public class ImageBrowser implements Runnable, ActionListener {
 			upContents.add(searchButton, BorderLayout.EAST);
 		}
 
-		upContents.add(new JLabel(" " + Application.path), BorderLayout.CENTER);
+		upContents.add(new JLabel(Application.images.size() + " images in " + Application.path), BorderLayout.CENTER);
 
 		frame.add(upContents, BorderLayout.NORTH);
 	}

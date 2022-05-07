@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>SwingImagesBrowser</groupId>
 	<artifactId>SwingImagesBrowser</artifactId>
-	<version>1.00-SNAPSHOT</version>
+	<version>1.01-SNAPSHOT</version>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
