@@ -17,7 +17,4 @@ logs/
 *.iml
 
 # Other files
-*.jpeg
-*.jpg
-*.png
 /bin/
