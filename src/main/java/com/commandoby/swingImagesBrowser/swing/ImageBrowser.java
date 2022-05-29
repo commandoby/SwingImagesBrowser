@@ -50,7 +50,7 @@ public class ImageBrowser implements Runnable, ActionListener {
 
 	@Override
 	public void run() {
-		frame = new JFrame("DT Developer Test");
+		frame = new JFrame("Swing images browser");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
 		frame.setVisible(true);
